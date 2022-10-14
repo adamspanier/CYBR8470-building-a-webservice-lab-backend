@@ -32,12 +32,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if ENVIRONMENT == 'PROD':
-    DEBUG = False
-else:
-    DEBUG = True
+#if ENVIRONMENT == 'PROD':
+#    DEBUG = False
+#else:
+#    DEBUG = True
 
-ALLOWED_HOSTS = ['137.48.185.230', 'localhost', 'django']
+DEBUG = True
+
+ALLOWED_HOSTS = ['10.67.22.190', 'localhost', 'django']
 
 
 # Application definition
