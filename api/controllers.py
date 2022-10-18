@@ -219,35 +219,21 @@ class DogList(APIView):
     """
     Present a list of all Dogs
     """
-    parser_classes = (parsers.JSONParser,parsers.FormParser)
-    renderer_classes = (renderers.JSONRenderer, )
 
     def get(self, request, format=None):
         dog = Dog.objects.all()
         json_dogs = serializers.serialize('json', dog)
-        content = {'dogs': json_dogs}
         return HttpResponse(json_dogs, content_type='json')
 
     def post(self, request, *args, **kwargs):
-        print 'Get DATA'
-        print str(request.data)
-
-        name = request.data.get('name')
-        age = int(request.data.get('age'))
-        breed = request.data.get('breed')
-        gender = request.data.get('gender')
-        color = request.data.get('color')
-        favoritefood = request.data.get('favoritefood')
-        favoritetoy = request.data.get('favoritetoy')
-
         newdog = Dog(
-            name = name,
-            age = age,
-            breed = breed,
-            gender = gender,
-            color = color,
-            favoritefood = favoritefood,
-            favoritetoy = favoritetoy
+            name = request.data.get('name'),
+            age = int(request.data.get('age')),
+            breed = Breed.objects.get(pk=request.data.get('breed')),
+            gender = request.data.get('gender'),
+            color = request.data.get('color'),
+            favoritefood = request.data.get('favoritefood'),
+            favoritetoy = request.data.get('favoritetoy')
         )
 
         try:
@@ -265,46 +251,22 @@ class DogDetail(APIView):
     """
 
     def get(self, request, id):
-        print(id)
         dog = Dog.objects.get(pk=id)
-        print(dog)
         json_dog = serializers.serialize('json', [dog])
-        content = {'dogs': json_dog}
         return HttpResponse(json_dog, content_type='json')
 
-    #here
-    #Tyring to get the put method working to put
-    #Catching the exception, but not actually putting anything
     def put(self, request, id):
         try:
             dog = Dog.objects.get(pk=id)
-            # This is the replacement data
-            print(request.data)
-
-            name = request.data.get('name')
-            age = int(request.data.get('age'))
-            breed = request.data.get('breed')
-            gender = request.data.get('gender')
-            color = request.data.get('color')
-            favoritefood = request.data.get('favoritefood')
-            favoritetoy = request.data.get('favoritetoy')
-
-            newdog = Dog(
-                id=id,
-                name = name,
-                age = age,
-                breed = breed,
-                gender = gender,
-                color = color,
-                favoritefood = favoritefood,
-                favoritetoy = favoritetoy
-            )
-
-            json_dog = serializers.serialize('json', [dog])
-            # This is the existing data
-            print(newdog)
-            newdog.save(id)
-            return Response(json_dog.data)
+            dog.name = request.data.get('name')
+            dog.age = int(request.data.get('age'))
+            dog.breed = Breed.objects.get(pk=request.data.get('breed'))
+            dog.gender = request.data.get('gender')
+            dog.color = request.data.get('color')
+            dog.favoritefood = request.data.get('favoritefood')
+            dog.favoritetoy = request.data.get('favoritetoy')
+            dog.save()
+            return Response({'success': True}, status=status.HTTP_200_OK)
         except BaseException as err:
             print(err)
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -316,36 +278,22 @@ class DogDetail(APIView):
 
 class BreedList(APIView):
     """
-    Present a list of all Dogs
+    Present a list of all breeds
     """
-    parser_classes = (parsers.JSONParser,parsers.FormParser)
-    renderer_classes = (renderers.JSONRenderer, )
 
     def get(self, request, format=None):
         breed = Breed.objects.all()
         json_breeds = serializers.serialize('json', breed)
-        content = {'breeds': json_breeds}
         return HttpResponse(json_breeds, content_type='json')
 
     def post(self, request, *args, **kwargs):
-        print 'Get DATA'
-        print str(request.data)
-
-        name = request.data.get('name')
-        size = request.data.get('size')
-        friendliness = request.data.get('friendliness')
-        trainability = request.data.get('trainability')
-        sheddingamount = request.data.get('sheddingamount')
-        exersciseneeds = request.data.get('exersciseneeds')
-
         newbreed = Breed(
-            id=id,
-            name = name,
-            size = size,
-            friendliness = friendliness,
-            trainability = trainability,
-            sheddingamount = sheddingamount,
-            exersciseneeds = exersciseneeds
+            name = request.data.get('name'),
+            size = request.data.get('size'),
+            friendliness = request.data.get('friendliness'),
+            trainability = request.data.get('trainability'),
+            sheddingamount = request.data.get('sheddingamount'),
+            exersciseneeds = request.data.get('exersciseneeds')
         )
 
         try:
@@ -360,48 +308,24 @@ class BreedList(APIView):
 
 class BreedDetail(APIView):
     """
-    Retreive details relating to a specific Dog
+    Retreive details relating to a specific breed
     """
-
     def get(self, request, id):
-        print(id)
         breed = Breed.objects.get(pk=id)
-        print(breed)
         json_breed = serializers.serialize('json', [breed])
-        content = {'dogs': json_breed}
         return HttpResponse(json_breed, content_type='json')
 
-    #here
-    #Tyring to get the put method working to put
-    #Catching the exception, but not actually putting anything
     def put(self, request, id):
         try:
             breed = Breed.objects.get(pk=id)
-            # This is the replacement data
-            print(request.data)
-
-            name = request.data.get('name')
-            size = request.data.get('size')
-            friendliness = request.data.get('friendliness')
-            trainability = request.data.get('trainability')
-            sheddingamount = request.data.get('sheddingamount')
-            exersciseneeds = request.data.get('exersciseneeds')
-
-            newbreed = Breed(
-                id=id,
-                name = name,
-                size = size,
-                friendliness = friendliness,
-                trainability = trainability,
-                sheddingamount = sheddingamount,
-                exersciseneeds = exersciseneeds
-            )
-
-            json_breed = serializers.serialize('json', [breed])
-            # This is the existing data
-            print(newbreed)
-            newbreed.save(id)
-            return Response(json_breed.data)
+            breed.name = request.data.get('name')
+            breed.size = request.data.get('size')
+            breed.friendliness = request.data.get('friendliness')
+            breed.trainability = request.data.get('trainability')
+            breed.sheddingamount = request.data.get('sheddingamount')
+            breed.exersciseneeds = request.data.get('exersciseneeds')
+            breed.save()
+            return Response({'success': True}, status=status.HTTP_200_OK)
         except BaseException as err:
             print(err)
             return Response(status=status.HTTP_400_BAD_REQUEST)
